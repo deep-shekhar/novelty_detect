@@ -82,9 +82,9 @@ def main(_):
     check_some_assertions()
 
     # manual handling of GPU
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.4)
+    #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.4)
     run_config = tf.ConfigProto()
-    run_config.gpu_options.allow_growth=True
+    #run_config.gpu_options.allow_growth=True
 
     with tf.Session(config=run_config) as sess:
         tmp_model = ALOCC_Model(
