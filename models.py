@@ -203,10 +203,13 @@ class ALOCC_Model(object):
       sample = sample[0:self.sample_num]
 
     elif config.dataset == 'my_data':
-      sample_files = self.data[0:10]
-      sample,_ = read_lst_images(sample_files, self.patch_size, self.patch_step, self.b_work_on_patch)
-      sample = np.array(sample).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
-      sample = sample[0:self.sample_num]
+      if self.b_work_on_patch:
+        sample_files = self.data[0:10]
+      else:
+        sample_files = self.data[0:self.sample_num]
+      sample = read_lst_images(sample_files, self.patch_size, self.patch_step, self.b_work_on_patch)  #here
+      #sample = np.array(sample).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
+      #sample = sample[0:self.sample_num]
 
     # export images
     sample_inputs = np.array(sample).astype(np.float32)
@@ -233,10 +236,10 @@ class ALOCC_Model(object):
       sample_w_noise = np.array(sample_w_noise).reshape(-1, self.patch_size[0], self.patch_size[1], 1)
     if config.dataset == 'my_data':
       sample_files = self.data
-      sample, _ = read_lst_images(sample_files, self.patch_size, self.patch_step, self.b_work_on_patch)
-      sample = np.array(sample).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
-      sample_w_noise, _ = read_lst_images_w_noise(sample_files, self.patch_size, self.patch_step)
-      sample_w_noise = np.array(sample_w_noise).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
+      sample = read_lst_images(sample_files, self.patch_size, self.patch_step, self.b_work_on_patch)
+      #sample = np.array(sample).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
+      sample_w_noise = read_lst_images_w_noise2(sample_files, self.patch_size, self.patch_step)
+      #sample_w_noise = np.array(sample_w_noise).reshape(-1, self.patch_size[0], self.patch_size[1], 3)
 
 
     for epoch in xrange(config.epoch):
