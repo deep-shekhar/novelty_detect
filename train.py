@@ -5,13 +5,13 @@ from utils import pp, visualize, to_json, show_all_variables
 import tensorflow as tf
 
 flags = tf.app.flags
-flags.DEFINE_integer("epoch", 40, "Epoch to train [25]")
+flags.DEFINE_integer("epoch", 60, "Epoch to train [25]")
 flags.DEFINE_float("learning_rate", 0.002, "Learning rate of for adam [0.0002]")
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_integer("attention_label", 1, "Conditioned label that growth attention of training label [1]")
 flags.DEFINE_float("r_alpha", 0.2, "Refinement parameter [0.2]")
 flags.DEFINE_integer("train_size", 10000, "The size of train images [np.inf]")
-flags.DEFINE_integer("batch_size",10, "The size of batch images [64]")
+flags.DEFINE_integer("batch_size",80, "The size of batch images [64]")
 flags.DEFINE_integer("input_height", 45, "The size of image to use. [45]")
 flags.DEFINE_integer("input_width", None, "The size of image to use. If None, same value as input_height [None]")
 flags.DEFINE_integer("output_height", 45, "The size of the output images to produce [45]")
@@ -59,7 +59,7 @@ def main(_):
     FLAGS.dataset_address = './dataset'
 
     nd_input_frame_size = (240, 360)
-    nd_slice_size = (360, 200)
+    nd_slice_size = (315, 180)
     n_stride = 64
     n_fetch_data = 80
     # ---------------------------------------------------------------------------------------------

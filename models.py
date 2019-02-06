@@ -253,7 +253,7 @@ class ALOCC_Model(object):
 
       # for detecting valuable epoch that we must stop training step
       # sample_input_for_test_each_train_step.npy
-      sample_test = np.load('SIFTETS.npy').reshape([168,45,45,3])[0:128]
+      sample_test = np.load('SIFTETS.npy').reshape([6,180,315,3])[0:10]      #orig was = 168,45,45,3
 
       for idx in xrange(0, batch_idxs):
         if config.dataset == 'mnist':
