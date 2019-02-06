@@ -91,7 +91,7 @@ def deconv2d(input_, output_shape,
     else:
       return deconv
      
-def lrelu(x, leak=0.2, name="lrelu"):
+def lrelu(x, leak=0.08, name="lrelu"):
   return tf.maximum(x, leak*x)
 
 def linear(input_, output_size, scope=None, stddev=0.02, bias_start=0.0, with_w=False):

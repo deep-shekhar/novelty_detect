@@ -5,8 +5,8 @@ from utils import pp, visualize, to_json, show_all_variables
 import tensorflow as tf
 
 flags = tf.app.flags
-flags.DEFINE_integer("epoch", 300, "Epoch to train [25]")
-flags.DEFINE_float("learning_rate", 0.0006, "Learning rate of for adam [0.0002]")
+flags.DEFINE_integer("epoch", 900, "Epoch to train [25]")
+flags.DEFINE_float("learning_rate", 0.008, "Learning rate of for adam [0.0002]")
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_integer("attention_label", 1, "Conditioned label that growth attention of training label [1]")
 flags.DEFINE_float("r_alpha", 0.2, "Refinement parameter [0.2]")
@@ -47,7 +47,7 @@ def main(_):
     The main function for training steps     
     """
     pp.pprint(flags.FLAGS.__flags)
-    n_per_itr_print_results = 100
+    n_per_itr_print_results = 200
     kb_work_on_patch = False
 
     # ---------------------------------------------------------------------------------------------
