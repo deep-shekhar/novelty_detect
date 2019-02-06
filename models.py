@@ -14,7 +14,7 @@ class ALOCC_Model(object):
                z_dim=100, gf_dim=16, df_dim=16, gfc_dim=512, dfc_dim=512, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
                checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.2,
-               kb_work_on_patch=True, nd_input_frame_size=(240, 360), nd_patch_size=(100, 100), n_stride=1,
+               kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
                n_fetch_data=10, n_per_itr_print_results=200):
     """
     This is the main class of our Adversarially Learned One-Class Classifier for Novelty Detection
@@ -261,10 +261,12 @@ class ALOCC_Model(object):
           batch_noise = sample_w_noise[idx * config.batch_size:(idx + 1) * config.batch_size]
         elif config.dataset == 'UCSD' or config.dataset == 'my_data':
           batch = sample[idx * config.batch_size:(idx + 1) * config.batch_size]
+          print('Image Batch: ',idx * config.batch_size,' ',(idx + 1) * config.batch_size)
           batch_noise = sample_w_noise[idx * config.batch_size:(idx + 1) * config.batch_size]
 
         batch_images = np.array(batch).astype(np.float32)
         batch_noise_images = np.array(batch_noise).astype(np.float32)
+        #sample_inputs = np.array(batch).astype(np.float32)
 
         batch_z = np.random.uniform(-1, 1, [config.batch_size, self.z_dim]).astype(np.float32)
 
@@ -345,6 +347,7 @@ class ALOCC_Model(object):
                 },
               )
               # export images
+              print('export')
               scipy.misc.imsave('./{}/z_test_{:02d}_{:04d}.png'.format(config.sample_dir, epoch, idx),
                             montage(samples[:, :, :, 0]))
 

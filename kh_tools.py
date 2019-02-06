@@ -45,7 +45,7 @@ def read_image_w_noise(s_image_path):
     tmp_image = read_image(s_image_path)
     sigma = 0.155
     noisy = random_noise(tmp_image, var=sigma ** 2)
-    # image = scipy.misc.imresize(tmp_image, nd_img_size)
+    #image = scipy.misc.imresize(tmp_image, (50,50))
     return np.array(noisy)
 
 def read_lst_images_w_noise2(lst_images_path,nd_patch_size, n_patch_step):
@@ -92,10 +92,10 @@ def read_dataset_images(s_dataset_url , nd_img_size ,n_number_count):
     return np.array(lst_images)
 
 def read_image(s_image_path):
-    tmp_image = scipy.misc.imread(s_image_path)[20:200,0:315]/127.5 -1.
+    tmp_image = scipy.misc.imread(s_image_path)[10:190,0:315]/127.5 -1.
     #sigma = 0.155
     #noisy = random_noise(tmp_image, var=sigma ** 2)
-    # image = scipy.misc.imresize(tmp_image, nd_img_size)
+    #image = scipy.misc.imresize(tmp_image, (50,50))
     return np.array(tmp_image)
 
 
