@@ -16,8 +16,8 @@ flags.DEFINE_float("learning_rate", 0, "Learning rate of for adam [0.0002]")
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_integer("attention_label", 1, "Conditioned label that growth attention of training label [1]")
 flags.DEFINE_float("r_alpha", 0.2, "Refinement parameter [0.2]")
-flags.DEFINE_integer("train_size", np.inf, "The size of train images [np.inf]")
-flags.DEFINE_integer("batch_size", 128, "The size of batch images [64]")
+flags.DEFINE_integer("train_size", 10000, "The size of train images [np.inf]")
+flags.DEFINE_integer("batch_size", 1, "The size of batch images [64]")
 flags.DEFINE_integer("input_height", 45, "The size of image to use. [45]")
 flags.DEFINE_integer("input_width", None, "The size of image to use. If None, same value as input_height [None]")
 flags.DEFINE_integer("output_height", 45, "The size of the output images to produce [45]")
@@ -51,16 +51,16 @@ def main(_):
     pp.pprint(flags.FLAGS.__flags)
 
     n_per_itr_print_results = 100
-    n_fetch_data = 10
+    n_fetch_data = 1
     kb_work_on_patch= False
-    nd_input_frame_size = (240, 360)
-    #nd_patch_size = (45, 45)
-    n_stride = 10
-    #FLAGS.checkpoint_dir = "./checkpoint/UCSD_128_45_45/"
+    nd_input_frame_size = (200, 360)
+    nd_patch_size = (315, 180)
+    n_stride = 64
+    FLAGS.checkpoint_dir = "./checkpoint/my_data_6_180_315/"
 
-    #FLAGS.dataset = 'UCSD'
-    #FLAGS.dataset_address = './dataset/UCSD_Anomaly_Dataset.v1p2/UCSDped2/Test'
-    lst_test_dirs = ['Test004','Test005','Test006']
+    FLAGS.dataset = 'my_data'
+    FLAGS.dataset_address = './test_data'
+    lst_test_dirs = ['Test']
 
     #DATASET PARAMETER : MNIST
     #FLAGS.dataset = 'mnist'
@@ -69,21 +69,22 @@ def main(_):
     #nd_patch_size = (28, 28)
     #FLAGS.checkpoint_dir = "./checkpoint/mnist_128_28_28/"
 
-    #FLAGS.input_width = nd_patch_size[0]
-    #FLAGS.input_height = nd_patch_size[1]
-    #FLAGS.output_width = nd_patch_size[0]
-    #FLAGS.output_height = nd_patch_size[1]
+    FLAGS.input_width = nd_patch_size[0]
+    FLAGS.input_height = nd_patch_size[1]
+    FLAGS.output_width = nd_patch_size[0]
+    FLAGS.output_height = nd_patch_size[1]
 
 
     check_some_assertions()
 
     nd_patch_size = (FLAGS.input_width, FLAGS.input_height)
-    FLAGS.nStride = n_stride
+    nd_patch_step = (n_stride, n_stride)
+    #FLAGS.nStride = n_stride
 
     #FLAGS.input_fname_pattern = '*'
     FLAGS.train = False
     FLAGS.epoch = 1
-    FLAGS.batch_size = 504
+    FLAGS.batch_size = 1
 
 
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.1)
@@ -137,16 +138,11 @@ def main(_):
             exit()
             #generated_data = tmp_ALOCC_model.feed2generator(data[0:FLAGS.batch_size])
 
-        # else in UCDS (depends on infrustructure)
-        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address, 'Test[0-9][0-9][0-9]'))):
+        # else in (depends on infrustructure)
+        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test'))):
             tmp_lst_image_paths = []
-            if os.path.basename(s_image_dirs) not in ['Test004']:
-               print('Skip ',os.path.basename(s_image_dirs))
-               continue
+            
             for s_image_dir_files in sorted(glob(os.path.join(s_image_dirs + '/*'))):
-                if os.path.basename(s_image_dir_files) not in ['068.tif']:
-                    print('Skip ', os.path.basename(s_image_dir_files))
-                    continue
                 tmp_lst_image_paths.append(s_image_dir_files)
 
 
@@ -165,7 +161,8 @@ def main(_):
 
 def process_frame(s_name,frames_src,sess):
     nd_patch,nd_location = get_image_patches(frames_src,sess.patch_size,sess.patch_step)
-    frame_patches = nd_patch.transpose([1,0,2,3])
+    frame_patches = nd_patch#.transpose([1,0,2,3])
+    print('frame patches shape = ',frame_patches.shape)
     print('frame patches :{}\npatches size:{}'.format(len(frame_patches),(frame_patches.shape[1],frame_patches.shape[2])))
 
     lst_prob = sess.f_test_frozen_model(frame_patches)

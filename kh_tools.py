@@ -135,30 +135,35 @@ def get_image_patches(image_src, nd_patch_size, nd_stride):
     tmp_frame = image_src[0].shape
     n_frame_h = tmp_frame[0]
     n_frame_w = tmp_frame[1]
+    start_h = 0
+    end_h = 180
+    start_w = 0
+    end_w = 315
+    #print('frame_h = {}, frame_w = {}, stride_h = {}, stride_w = {}'.format(n_frame_h,n_frame_w,n_stride_h,n_stride_w))
 
     # for i in range(0,n_frame_h,n_stride_h):
     # np.array(lst_patches[10])[0,:,:]
     flag_permission_h = flag_permission_w = True
     i = 0
-    while i < n_frame_h and flag_permission_h:
+    '''while i < n_frame_h and flag_permission_h:
         flag_permission_w = True
         start_h = i
-        end_h = i + nd_patch_size[0]
+        end_h = i + nd_patch_size[1]
         if end_h > n_frame_h:
             end_h = n_frame_h
-            start_h = n_frame_h - nd_patch_size[0]
+            start_h = n_frame_h - nd_patch_size[1]
             # break
         # for j in range(0,n_frame_w,n_stride_w):
         j = 0
         while j < n_frame_w and flag_permission_w:
             start_w = j
-            end_w = j + nd_patch_size[1]
+            end_w = j + nd_patch_size[0]
             if end_w > n_frame_w:
                 end_w = n_frame_w
-                start_w = n_frame_w - nd_patch_size[1]
+                start_w = n_frame_w - nd_patch_size[0]
                 # break
 
-            # print(start_w,end_w,'**',start_h,end_h)
+            print(start_w,end_w,'**',start_h,end_h)
 
             tmp_slices = np.array(image_src[:, start_h:end_h, start_w:end_w])
             lst_patches.append(tmp_slices)
@@ -172,7 +177,11 @@ def get_image_patches(image_src, nd_patch_size, nd_stride):
         i += n_stride_h
         if i > n_frame_h:
             flag_permission_h = False
-            i = n_frame_h - nd_patch_size[0]
+            i = n_frame_h - nd_patch_size[0]'''
+    tmp_slices = np.array(image_src[:, start_h:end_h, start_w:end_w])
+    print('temp_slices shape = ',tmp_slices.shape)
+    lst_patches.append(tmp_slices)
+    lst_locations.append([start_h, start_w])
 
     return np.array(lst_patches), lst_locations
 

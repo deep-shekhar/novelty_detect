@@ -249,7 +249,7 @@ class ALOCC_Model(object):
       elif config.dataset == 'UCSD':
         batch_idxs = min(len(sample), config.train_size) // config.batch_size
       elif config.dataset == 'my_data':
-        batch_idxs = min(len(sample), config.train_size) // config.batch_size  
+        batch_idxs = min(len(sample), config.train_size) // config.batch_size
 
       # for detecting valuable epoch that we must stop training step
       # sample_input_for_test_each_train_step.npy
@@ -505,29 +505,32 @@ class ALOCC_Model(object):
     tmp_shape = lst_image_slices.shape
     if self.dataset_name=='UCSD':
       tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 1)
+    elif self.dataset_name == 'my_data':
+      tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 3)  
     else:
       tmp_lst_slices = lst_image_slices
     batch_idxs = len(tmp_lst_slices) // self.batch_size
-
+    
     print('start new process ...')
     for i in xrange(0, batch_idxs):
-        batch_data = tmp_lst_slices[i * self.batch_size:(i + 1) * self.batch_size]
+      batch_data = tmp_lst_slices[i * self.batch_size:(i + 1) * self.batch_size]
 
-        results_g = self.sess.run(self.G, feed_dict={self.z: batch_data})
-        results_d = self.sess.run(self.D_logits, feed_dict={self.inputs: batch_data})
-        #results = self.sess.run(self.sampler, feed_dict={self.z: batch_data})
+      results_g = self.sess.run(self.G, feed_dict={self.z: batch_data})
+      results_d = self.sess.run(self.D_logits, feed_dict={self.inputs: batch_data})
+      results = self.sess.run(self.sampler, feed_dict={self.z: batch_data})
 
-        # to log some images with d values
-        #for idx,image in enumerate(results_g):
-        #  scipy.misc.imsave('samples/{}_{}.jpg'.format(idx,results_d[idx][0]),batch_data[idx,:,:,0])
+      # to log some images with d values
+      #for idx,image in enumerate(results_g):
+      # scipy.misc.imsave('samples/{}_{}.jpg'.format(idx,results_d[idx][0]),batch_data[idx,:,:,0])
 
-        lst_discriminator_v.extend(results_d)
-        lst_generated_img.extend(results_g)
-        print('finish pp ... {}/{}'.format(i,batch_idxs))
+      lst_discriminator_v.extend(results_d)
+      lst_generated_img.extend(results_g)
+      print('finish pp ... {}/{}'.format(i,batch_idxs))
 
-    #f = plt.figure()
-    #plt.plot(np.array(lst_discriminator_v))
-    #f.savefig('samples/d_values.jpg')
+    f = plt.figure()
+    print(np.array(lst_discriminator_v))
+    plt.scatter(np.array(lst_discriminator_v[0]),range(len(lst_discriminator_v)))
+    f.savefig('samples/d_values.jpg')
 
     scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_generated.jpg', montage(np.array(lst_generated_img)[:,:,:,0]))
     scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_input.jpg', montage(np.array(tmp_lst_slices)[:,:,:,0]))
