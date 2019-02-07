@@ -11,9 +11,9 @@ class ALOCC_Model(object):
   def __init__(self, sess,
                input_height=45,input_width=45, output_height=64, output_width=64,
                batch_size=87, sample_num = 128, attention_label=1, is_training=True,
-               z_dim=100, gf_dim=32, df_dim=32, gfc_dim=1024, dfc_dim=1024, c_dim=3,
+               z_dim=100, gf_dim=64, df_dim=64, gfc_dim=512, dfc_dim=512, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
-               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.3,
+               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.4,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
                n_fetch_data=10, n_per_itr_print_results=200):
     """
@@ -76,6 +76,7 @@ class ALOCC_Model(object):
     self.g_bn4 = batch_norm(name='g_bn4')
     self.g_bn5 = batch_norm(name='g_bn5')
     self.g_bn6 = batch_norm(name='g_bn6')
+    #self.g_bn7 = batch_norm(name='g_bn7')
 
     self.dataset_name = dataset_name
     self.dataset_address= dataset_address
@@ -390,11 +391,11 @@ class ALOCC_Model(object):
       hae2 = lrelu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
 
       h2, self.h2_w, self.h2_b = deconv2d(
-        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim*2], name='g_decoder_h1', with_w=True)
+        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim*4], name='g_decoder_h1', with_w=True)
       h2 = tf.nn.relu(self.g_bn2(h2))
 
       h3, self.h3_w, self.h3_b = deconv2d(
-          h2, [self.batch_size, s_h2, s_w2, self.gf_dim*1], name='g_decoder_h0', with_w=True)
+          h2, [self.batch_size, s_h2, s_w2, self.gf_dim*2], name='g_decoder_h0', with_w=True)
       h3 = tf.nn.relu(self.g_bn3(h3))
 
       h4, self.h4_w, self.h4_b = deconv2d(
@@ -418,11 +419,11 @@ class ALOCC_Model(object):
       hae2 = lrelu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
 
       h2, self.h2_w, self.h2_b = deconv2d(
-        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim * 2], name='g_decoder_h1', with_w=True)
+        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim * 4], name='g_decoder_h1', with_w=True)
       h2 = tf.nn.relu(self.g_bn2(h2))
 
       h3, self.h3_w, self.h3_b = deconv2d(
-        h2, [self.batch_size, s_h2, s_w2, self.gf_dim * 1], name='g_decoder_h0', with_w=True)
+        h2, [self.batch_size, s_h2, s_w2, self.gf_dim * 2], name='g_decoder_h0', with_w=True)
       h3 = tf.nn.relu(self.g_bn3(h3))
 
       h4, self.h4_w, self.h4_b = deconv2d(
@@ -498,7 +499,7 @@ class ALOCC_Model(object):
       return -1
 
   # =========================================================================================================
-  def f_test_frozen_model(self,lst_image_slices=[]):
+  def f_test_frozen_model(self,lst_image_slices=[],img_file=0):
     lst_generated_img= []
     lst_discriminator_v = []
     tmp_shape = lst_image_slices.shape
@@ -515,21 +516,21 @@ class ALOCC_Model(object):
       batch_data = tmp_lst_slices[i * self.batch_size:(i + 1) * self.batch_size]
 
       results_g = self.sess.run(self.G, feed_dict={self.z: batch_data})
-      results_d = self.sess.run(self.D_logits, feed_dict={self.inputs: batch_data})
+      results_d = self.sess.run(self.D_logits, feed_dict={self.inputs: results_g})
       results = self.sess.run(self.sampler, feed_dict={self.z: batch_data})
 
       # to log some images with d values
       #for idx,image in enumerate(results_g):
       # scipy.misc.imsave('samples/{}_{}.jpg'.format(idx,results_d[idx][0]),batch_data[idx,:,:,0])
 
-      lst_discriminator_v.extend(results_d)
+      lst_discriminator_v.extend(results_d*-1)
       lst_generated_img.extend(results_g)
       print('finish pp ... {}/{}'.format(i,batch_idxs))
 
-    f = plt.figure()
+    #f = plt.figure()
     print(np.array(lst_discriminator_v))
-    plt.scatter(np.array(lst_discriminator_v[0]),range(len(lst_discriminator_v)))
-    f.savefig('samples/d_values.jpg')
+    #plt.scatter(np.array(lst_discriminator_v).reshape(1,len(lst_discriminator_v)),range(len(lst_discriminator_v)))
+    #f.savefig('samples/d_values.jpg')
 
-    scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_generated.jpg', montage(np.array(lst_generated_img)[:,:,:,0]))
-    scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_input.jpg', montage(np.array(tmp_lst_slices)[:,:,:,0]))
+    scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_generated{}.jpg'.format(img_file), montage(np.array(lst_generated_img)[:,:,:,0]))
+    scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_input{}.jpg'.format(img_file), montage(np.array(tmp_lst_slices)[:,:,:,0]))

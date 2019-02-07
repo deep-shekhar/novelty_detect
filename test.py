@@ -139,33 +139,32 @@ def main(_):
             #generated_data = tmp_ALOCC_model.feed2generator(data[0:FLAGS.batch_size])
 
         # else in (depends on infrustructure)
-        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test'))):
+        cnt=0
+        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test_Unreal'))):
             tmp_lst_image_paths = []
             
             for s_image_dir_files in sorted(glob(os.path.join(s_image_dirs + '/*'))):
                 tmp_lst_image_paths.append(s_image_dir_files)
 
 
-            #random
-            #lst_image_paths = [tmp_lst_image_paths[x] for x in random.sample(range(0, len(tmp_lst_image_paths)), n_fetch_data)]
-            lst_image_paths = tmp_lst_image_paths
-            #images =read_lst_images(lst_image_paths,nd_patch_size,nd_patch_step,b_work_on_patch=False)
-            images = read_lst_images_w_noise2(lst_image_paths, nd_patch_size, nd_patch_step)
+            for img_file in tmp_lst_image_paths:
+                #lst_image_paths = [tmp_lst_image_paths[x] for x in random.sample(range(0, len(tmp_lst_image_paths)), n_fetch_data)]
+                lst_image_paths = [img_file] #tmp_lst_image_paths
+                #images =read_lst_images(lst_image_paths,nd_patch_size,nd_patch_step,b_work_on_patch=False)
+                images = read_lst_images_w_noise2(lst_image_paths, nd_patch_size, nd_patch_step)
 
-            lst_prob = process_frame(os.path.basename(s_image_dirs),images,tmp_ALOCC_model)
+                lst_prob = process_frame(os.path.basename(s_image_dirs),images,tmp_ALOCC_model,cnt)
+                cnt += 1
+                print('test for img {} is finished'.format(img_file))
 
-            print('pseudocode test is finished')
 
-            # This code for just check output for readers
-            # ...
-
-def process_frame(s_name,frames_src,sess):
+def process_frame(s_name,frames_src,sess,img_file):
     nd_patch,nd_location = get_image_patches(frames_src,sess.patch_size,sess.patch_step)
     frame_patches = nd_patch#.transpose([1,0,2,3])
-    print('frame patches shape = ',frame_patches.shape)
-    print('frame patches :{}\npatches size:{}'.format(len(frame_patches),(frame_patches.shape[1],frame_patches.shape[2])))
-
-    lst_prob = sess.f_test_frozen_model(frame_patches)
+    #print('frame patches shape = ',frame_patches.shape)
+    #print('frame patches :{}\npatches size:{}'.format(len(frame_patches),(frame_patches.shape[1],frame_patches.shape[2])))
+    
+    lst_prob = sess.f_test_frozen_model(frame_patches,img_file)
 
     #  This code for just check output for readers
     # ...

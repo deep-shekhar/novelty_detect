@@ -179,7 +179,7 @@ def get_image_patches(image_src, nd_patch_size, nd_stride):
             flag_permission_h = False
             i = n_frame_h - nd_patch_size[0]'''
     tmp_slices = np.array(image_src[:, start_h:end_h, start_w:end_w])
-    print('temp_slices shape = ',tmp_slices.shape)
+    #print('temp_slices shape = ',tmp_slices.shape)
     lst_patches.append(tmp_slices)
     lst_locations.append([start_h, start_w])
 
