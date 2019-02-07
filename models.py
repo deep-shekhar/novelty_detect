@@ -11,7 +11,7 @@ class ALOCC_Model(object):
   def __init__(self, sess,
                input_height=45,input_width=45, output_height=64, output_width=64,
                batch_size=87, sample_num = 128, attention_label=1, is_training=True,
-               z_dim=100, gf_dim=64, df_dim=64, gfc_dim=512, dfc_dim=1024, c_dim=3,
+               z_dim=100, gf_dim=32, df_dim=32, gfc_dim=1024, dfc_dim=1024, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
                checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.3,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
