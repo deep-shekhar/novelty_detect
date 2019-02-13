@@ -11,9 +11,9 @@ class ALOCC_Model(object):
   def __init__(self, sess,
                input_height=45,input_width=45, output_height=64, output_width=64,
                batch_size=87, sample_num = 128, attention_label=1, is_training=True,
-               z_dim=100, gf_dim=64, df_dim=64, gfc_dim=512, dfc_dim=512, c_dim=3,
+               z_dim=100, gf_dim=64, df_dim=32, gfc_dim=512, dfc_dim=512, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
-               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.2,
+               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.4,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
                n_fetch_data=10, n_per_itr_print_results=200):
     """
@@ -172,8 +172,8 @@ class ALOCC_Model(object):
 
 # =========================================================================================================
   def train(self, config):
-    d_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.d_loss, var_list=self.d_vars)
-    g_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.g_loss, var_list=self.g_vars)
+    d_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=self.d_vars)
+    g_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=self.g_vars)
 
     try:
       tf.global_variables_initializer().run()
@@ -372,9 +372,10 @@ class ALOCC_Model(object):
       h1 = lrelu(self.d_bn1(conv2d(h0, self.df_dim*2, name='d_h1_conv')))
       h2 = lrelu(self.d_bn2(conv2d(h1, self.df_dim*4, name='d_h2_conv')))
       h3 = lrelu(self.d_bn3(conv2d(h2, self.df_dim*8, name='d_h3_conv')))
-      h4 = linear(tf.reshape(h3, [self.batch_size, -1]), 1, 'd_h3_lin')
-      h5 = tf.nn.sigmoid(h4,name='d_output')
-      return h5, h4
+      h4 = lrelu(self.d_bn4(conv2d(h3, self.df_dim*16, name='d_h4_conv')))
+      h5 = linear(tf.reshape(h4, [self.batch_size, -1]), 1, 'd_h3_lin')
+      h6 = tf.nn.sigmoid(h5,name='d_output')
+      return h6, h5
 
   # =========================================================================================================
   def generator(self, z):
@@ -386,16 +387,16 @@ class ALOCC_Model(object):
       s_h8, s_w8 = conv_out_size_same(s_h4, 2), conv_out_size_same(s_w4, 2)
       s_h16, s_w16 = conv_out_size_same(s_h8, 2), conv_out_size_same(s_w8, 2)
 
-      hae0 = lrelu(self.g_bn4(conv2d(z   , self.df_dim * 2, name='g_encoder_h0_conv')))
-      hae1 = lrelu(self.g_bn5(conv2d(hae0, self.df_dim * 4, name='g_encoder_h1_conv')))
-      hae2 = lrelu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
+      hae0 = tf.nn.relu(self.g_bn4(conv2d(z   , self.df_dim * 2, name='g_encoder_h0_conv')))
+      hae1 = tf.nn.relu(self.g_bn5(conv2d(hae0, self.df_dim * 4, name='g_encoder_h1_conv')))
+      hae2 = tf.nn.relu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
 
       h2, self.h2_w, self.h2_b = deconv2d(
-        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim*4], name='g_decoder_h1', with_w=True)
+        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim*2], name='g_decoder_h1', with_w=True)
       h2 = tf.nn.relu(self.g_bn2(h2))
 
       h3, self.h3_w, self.h3_b = deconv2d(
-          h2, [self.batch_size, s_h2, s_w2, self.gf_dim*2], name='g_decoder_h0', with_w=True)
+          h2, [self.batch_size, s_h2, s_w2, self.gf_dim*1], name='g_decoder_h0', with_w=True)
       h3 = tf.nn.relu(self.g_bn3(h3))
 
       h4, self.h4_w, self.h4_b = deconv2d(
@@ -414,16 +415,16 @@ class ALOCC_Model(object):
       s_h8, s_w8 = conv_out_size_same(s_h4, 2), conv_out_size_same(s_w4, 2)
       s_h16, s_w16 = conv_out_size_same(s_h8, 2), conv_out_size_same(s_w8, 2)
 
-      hae0 = lrelu(self.g_bn4(conv2d(z, self.df_dim * 2, name='g_encoder_h0_conv')))
-      hae1 = lrelu(self.g_bn5(conv2d(hae0, self.df_dim * 4, name='g_encoder_h1_conv')))
-      hae2 = lrelu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
+      hae0 = tf.nn.relu(self.g_bn4(conv2d(z, self.df_dim * 2, name='g_encoder_h0_conv')))
+      hae1 = tf.nn.relu(self.g_bn5(conv2d(hae0, self.df_dim * 4, name='g_encoder_h1_conv')))
+      hae2 = tf.nn.relu(self.g_bn6(conv2d(hae1, self.df_dim * 8, name='g_encoder_h2_conv')))
 
       h2, self.h2_w, self.h2_b = deconv2d(
-        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim * 4], name='g_decoder_h1', with_w=True)
+        hae2, [self.batch_size, s_h4, s_w4, self.gf_dim * 2], name='g_decoder_h1', with_w=True)
       h2 = tf.nn.relu(self.g_bn2(h2))
 
       h3, self.h3_w, self.h3_b = deconv2d(
-        h2, [self.batch_size, s_h2, s_w2, self.gf_dim * 2], name='g_decoder_h0', with_w=True)
+        h2, [self.batch_size, s_h2, s_w2, self.gf_dim * 1], name='g_decoder_h0', with_w=True)
       h3 = tf.nn.relu(self.g_bn3(h3))
 
       h4, self.h4_w, self.h4_b = deconv2d(

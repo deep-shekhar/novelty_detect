@@ -54,7 +54,7 @@ def conv_cond_concat(x, y):
     x, y*tf.ones([x_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
 
 def conv2d(input_, output_dim, 
-       k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.09,
+       k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.02,
        name="conv2d"):
   with tf.variable_scope(name):
     w = tf.get_variable('w', [k_h, k_w, input_.get_shape()[-1], output_dim],
@@ -67,7 +67,7 @@ def conv2d(input_, output_dim,
     return conv
 
 def deconv2d(input_, output_shape,
-       k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.09,
+       k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.02,
        name="deconv2d", with_w=False):
   with tf.variable_scope(name):
     # filter : [height, width, output_channels, in_channels]
@@ -94,7 +94,10 @@ def deconv2d(input_, output_shape,
 def lrelu(x, leak=0.20, name="lrelu"):
   return tf.maximum(x, leak*x)
 
-def linear(input_, output_size, scope=None, stddev=0.09, bias_start=0.0, with_w=False):
+#def no_relu(x, leak=0.00, name="lrelu"):
+#  return tf.maximum(x, leak*x)
+
+def linear(input_, output_size, scope=None, stddev=0.02, bias_start=0.0, with_w=False):
   shape = input_.get_shape().as_list()
 
   with tf.variable_scope(scope or "Linear"):

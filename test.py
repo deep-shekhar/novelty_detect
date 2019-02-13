@@ -140,7 +140,7 @@ def main(_):
 
         # else in (depends on infrustructure)
         cnt=0
-        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test_Unreal'))):
+        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test_Real'))):
             tmp_lst_image_paths = []
             
             for s_image_dir_files in sorted(glob(os.path.join(s_image_dirs + '/*'))):
