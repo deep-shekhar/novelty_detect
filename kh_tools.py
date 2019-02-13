@@ -43,7 +43,7 @@ def read_dataset_image_path(s_dataset_url, n_number_count=None):
 
 def read_image_w_noise(s_image_path):
     tmp_image = read_image(s_image_path)
-    sigma = 0.155
+    sigma = 0.055 #0.155
     noisy = random_noise(tmp_image, var=sigma ** 2)
     #image = scipy.misc.imresize(tmp_image, (50,50))
     return np.array(noisy)
