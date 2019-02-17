@@ -349,7 +349,7 @@ class ALOCC_Model(object):
               # export images
               print('export')
               scipy.misc.imsave('./{}/z_test_{:02d}_{:04d}.png'.format(config.sample_dir, epoch, idx),
-                            montage(sample_test_out[:, :, :, 0]))
+                            montage(samples[:, :, :, 0]))
 
               # export images
               scipy.misc.imsave('./{}/train_{:02d}_{:04d}.png'.format(config.sample_dir, epoch, idx),
