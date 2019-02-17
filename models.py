@@ -13,7 +13,7 @@ class ALOCC_Model(object):
                batch_size=87, sample_num = 128, attention_label=1, is_training=True,
                z_dim=100, gf_dim=64, df_dim=32, gfc_dim=512, dfc_dim=512, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
-               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.4,
+               checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.2,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
                n_fetch_data=10, n_per_itr_print_results=200):
     """
@@ -349,7 +349,7 @@ class ALOCC_Model(object):
               # export images
               print('export')
               scipy.misc.imsave('./{}/z_test_{:02d}_{:04d}.png'.format(config.sample_dir, epoch, idx),
-                            montage(samples[:, :, :, 0]))
+                            montage(sample_test_out[:, :, :, 0]))
 
               # export images
               scipy.misc.imsave('./{}/train_{:02d}_{:04d}.png'.format(config.sample_dir, epoch, idx),
