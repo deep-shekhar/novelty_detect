@@ -504,6 +504,7 @@ class ALOCC_Model(object):
     lst_generated_img= []
     lst_discriminator_v = []
     tmp_shape = lst_image_slices.shape
+    print("temp shape = ",tmp_shape)
     if self.dataset_name=='UCSD':
       tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 1)
     elif self.dataset_name == 'my_data':
@@ -535,3 +536,4 @@ class ALOCC_Model(object):
 
     scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_generated{}.jpg'.format(img_file), montage(np.array(lst_generated_img)[:,:,:,0]))
     scipy.misc.imsave('./'+self.sample_dir+'/ALOCC_input{}.jpg'.format(img_file), montage(np.array(tmp_lst_slices)[:,:,:,0]))
+    return lst_discriminator_v[0][0]
