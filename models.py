@@ -11,7 +11,7 @@ class ALOCC_Model(object):
   def __init__(self, sess,
                input_height=45,input_width=45, output_height=64, output_width=64,
                batch_size=87, sample_num = 128, attention_label=1, is_training=True,
-               z_dim=100, gf_dim=64, df_dim=32, gfc_dim=512, dfc_dim=512, c_dim=3,
+               z_dim=100, gf_dim=64, df_dim=64, gfc_dim=512, dfc_dim=512, c_dim=3,
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
                checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.4,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
@@ -372,10 +372,10 @@ class ALOCC_Model(object):
       h1 = lrelu(self.d_bn1(conv2d(h0, self.df_dim*2, name='d_h1_conv')))
       h2 = lrelu(self.d_bn2(conv2d(h1, self.df_dim*4, name='d_h2_conv')))
       h3 = lrelu(self.d_bn3(conv2d(h2, self.df_dim*8, name='d_h3_conv')))
-      h4 = lrelu(self.d_bn4(conv2d(h3, self.df_dim*16, name='d_h4_conv')))
-      h5 = linear(tf.reshape(h4, [self.batch_size, -1]), 1, 'd_h3_lin')
-      h6 = tf.nn.sigmoid(h5,name='d_output')
-      return h6, h5
+      #h4 = lrelu(self.d_bn4(conv2d(h3, self.df_dim*16, name='d_h4_conv')))
+      h4 = linear(tf.reshape(h3, [self.batch_size, -1]), 1, 'd_h3_lin')
+      h5 = tf.nn.sigmoid(h4,name='d_output')
+      return h5, h4
 
   # =========================================================================================================
   def generator(self, z):
