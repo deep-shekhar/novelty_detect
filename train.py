@@ -10,7 +10,7 @@ flags.DEFINE_float("learning_rate", 0.0002, "Learning rate of for adam [0.0002]"
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_integer("attention_label", 1, "Conditioned label that growth attention of training label [1]")
 flags.DEFINE_float("r_alpha", 0.2, "Refinement parameter [0.2]")
-flags.DEFINE_integer("train_size", 10000, "The size of train images [np.inf]")
+flags.DEFINE_integer("train_size", 100000, "The size of train images [np.inf]")
 flags.DEFINE_integer("batch_size",6, "The size of batch images [64]")
 flags.DEFINE_integer("input_height", 45, "The size of image to use. [45]")
 flags.DEFINE_integer("input_width", None, "The size of image to use. If None, same value as input_height [None]")
@@ -61,7 +61,7 @@ def main(_):
     nd_input_frame_size = (200, 360)
     nd_slice_size = (315, 180)
     n_stride = 64
-    n_fetch_data = 102
+    n_fetch_data = 330
     # ---------------------------------------------------------------------------------------------
     # # DATASET PARAMETER : MNIST
     # FLAGS.dataset = 'mnist'
