@@ -372,10 +372,10 @@ class ALOCC_Model(object):
       h1 = lrelu(self.d_bn1(conv2d(h0, self.df_dim*2, name='d_h1_conv')))
       h2 = lrelu(self.d_bn2(conv2d(h1, self.df_dim*4, name='d_h2_conv')))
       h3 = lrelu(self.d_bn3(conv2d(h2, self.df_dim*8, name='d_h3_conv')))
-      #h4 = lrelu(self.d_bn4(conv2d(h3, self.df_dim*16, name='d_h4_conv')))
-      h4 = linear(tf.reshape(h3, [self.batch_size, -1]), 1, 'd_h3_lin')
-      h5 = tf.nn.sigmoid(h4,name='d_output')
-      return h5, h4
+      h4 = lrelu(self.d_bn4(conv2d(h3, self.df_dim*16, name='d_h4_conv')))
+      h5 = linear(tf.reshape(h4, [self.batch_size, -1]), 1, 'd_h3_lin')
+      h6 = tf.nn.sigmoid(h5,name='d_output')
+      return h6, h5
 
   # =========================================================================================================
   def generator(self, z):
