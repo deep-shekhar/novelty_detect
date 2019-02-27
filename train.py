@@ -47,7 +47,7 @@ def main(_):
     The main function for training steps     
     """
     pp.pprint(flags.FLAGS.__flags)
-    n_per_itr_print_results = 200
+    n_per_itr_print_results = 55
     kb_work_on_patch = False
 
     # ---------------------------------------------------------------------------------------------

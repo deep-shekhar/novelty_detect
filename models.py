@@ -15,7 +15,7 @@ class ALOCC_Model(object):
                dataset_name=None, dataset_address=None, input_fname_pattern=None,
                checkpoint_dir=None, log_dir=None, sample_dir=None, r_alpha = 0.4,
                kb_work_on_patch=True, nd_input_frame_size=(200, 360), nd_patch_size=(100, 100), n_stride=1,
-               n_fetch_data=10, n_per_itr_print_results=200):
+               n_fetch_data=10, n_per_itr_print_results=55):
     """
     This is the main class of our Adversarially Learned One-Class Classifier for Novelty Detection
     :param sess: TensorFlow session      
@@ -508,7 +508,7 @@ class ALOCC_Model(object):
     if self.dataset_name=='UCSD':
       tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 1)
     elif self.dataset_name == 'my_data':
-      tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 3)  
+      tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[0], tmp_shape[1], 3)  
     else:
       tmp_lst_slices = lst_image_slices
     batch_idxs = len(tmp_lst_slices) // self.batch_size
