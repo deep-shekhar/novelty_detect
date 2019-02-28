@@ -140,12 +140,13 @@ def main(_):
 
         # else in (depends on infrustructure)
         cnt=0
+        ano=0
+        non=0
         for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Test_Real'))):
             tmp_lst_image_paths = []
             
             for s_image_dir_files in sorted(glob(os.path.join(s_image_dirs + '/*'))):
                 tmp_lst_image_paths.append(s_image_dir_files)
-
 
             for img_file in tmp_lst_image_paths:
                 #lst_image_paths = [tmp_lst_image_paths[x] for x in random.sample(range(0, len(tmp_lst_image_paths)), n_fetch_data)]
@@ -154,9 +155,13 @@ def main(_):
                 images = read_lst_images_w_noise2(lst_image_paths, nd_patch_size, nd_patch_step)
 
                 lst_prob = process_frame(os.path.basename(s_image_dirs),images,tmp_ALOCC_model,cnt)
+                if lst_prob > 5.0:
+                    ano += 1
+                else:
+                    non += 1
                 cnt += 1
                 print('test for img {} is finished'.format(img_file))
-
+        print('Number of Anomalies = {}, Normal = {}'.format(ano,non))
 
 def process_frame(s_name,frames_src,sess,img_file):
     nd_patch,nd_location = get_image_patches(frames_src,sess.patch_size,sess.patch_step)
@@ -165,7 +170,7 @@ def process_frame(s_name,frames_src,sess,img_file):
     #print('frame patches :{}\npatches size:{}'.format(len(frame_patches),(frame_patches.shape[1],frame_patches.shape[2])))
     
     lst_prob = sess.f_test_frozen_model(frame_patches,img_file)
-
+    return lst_prob
     #  This code for just check output for readers
     # ...
 

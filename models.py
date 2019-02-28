@@ -172,8 +172,10 @@ class ALOCC_Model(object):
 
 # =========================================================================================================
   def train(self, config):
-    d_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=self.d_vars)
-    g_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=self.g_vars)
+    #d_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=self.d_vars)
+    #g_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=self.g_vars)
+    d_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.d_loss, var_list=self.d_vars)
+    g_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.g_loss, var_list=self.g_vars)
 
     try:
       tf.global_variables_initializer().run()
@@ -508,7 +510,7 @@ class ALOCC_Model(object):
     if self.dataset_name=='UCSD':
       tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 1)
     elif self.dataset_name == 'my_data':
-      tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[0], tmp_shape[1], 3)  
+      tmp_lst_slices = lst_image_slices.reshape(-1, tmp_shape[2], tmp_shape[3], 3)  
     else:
       tmp_lst_slices = lst_image_slices
     batch_idxs = len(tmp_lst_slices) // self.batch_size
