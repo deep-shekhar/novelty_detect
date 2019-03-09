@@ -172,10 +172,10 @@ class ALOCC_Model(object):
 
 # =========================================================================================================
   def train(self, config):
-    #d_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=self.d_vars)
-    #g_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=self.g_vars)
-    d_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.d_loss, var_list=self.d_vars)
-    g_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.g_loss, var_list=self.g_vars)
+    d_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=self.d_vars)
+    g_optim = tf.train.AdamOptimizer(learning_rate=config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=self.g_vars)
+    #d_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.d_loss, var_list=self.d_vars)
+    #g_optim = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.g_loss, var_list=self.g_vars)
 
     try:
       tf.global_variables_initializer().run()
