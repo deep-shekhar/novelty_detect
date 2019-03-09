@@ -61,7 +61,7 @@ def main(_):
     nd_input_frame_size = (200, 360)
     nd_slice_size = (315, 180)
     n_stride = 64
-    n_fetch_data = 136
+    n_fetch_data = 129
     # ---------------------------------------------------------------------------------------------
     # # DATASET PARAMETER : MNIST
     # FLAGS.dataset = 'mnist'
