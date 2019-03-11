@@ -22,7 +22,7 @@ IMAGE PROCESSING
 '''
 def get_noisy_data(data):
     lst_noisy = []
-    sigma = 0.1
+    sigma = 0.155
     for image in data:
         noisy = random_noise(image, var=sigma ** 2)
         lst_noisy.append(noisy)
@@ -43,7 +43,7 @@ def read_dataset_image_path(s_dataset_url, n_number_count=None):
 
 def read_image_w_noise(s_image_path):
     tmp_image = read_image(s_image_path)
-    sigma = 0.1
+    sigma = 0.155
     noisy = random_noise(tmp_image, var=sigma ** 2)
     #image = scipy.misc.imresize(tmp_image, (50,50))
     return np.array(noisy)
