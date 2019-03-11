@@ -142,7 +142,7 @@ def main(_):
         cnt=0
         ano=0
         non=0
-        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Real_false'))):
+        for s_image_dirs in sorted(glob(os.path.join(FLAGS.dataset_address,'Real_true'))):
             tmp_lst_image_paths = []
             
             for s_image_dir_files in sorted(glob(os.path.join(s_image_dirs + '/*'))):

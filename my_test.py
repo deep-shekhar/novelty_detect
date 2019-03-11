@@ -158,7 +158,7 @@ def main(_):
 
             for img_file in img_files:
                 tmp_image = read_image(img_file)
-                sigma = 0.155
+                sigma = 0.1
                 noisy = random_noise(tmp_image, var=sigma ** 2)
                 #images = read_lst_images_w_noise2(lst_image_paths, nd_patch_size, nd_patch_step)
                 image = np.array(noisy)
