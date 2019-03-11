@@ -165,7 +165,7 @@ def main(_):
 
                 discri_val = process_frame(image,tmp_ALOCC_model,cnt)
 
-                if discri_val >= 5.0:
+                if discri_val >= 10.0:
                     print('discriminator value = {}'.format(discri_val))
                     scipy.misc.imsave('/home/deep/Desktop/anomaly/anomaly_{}.jpg'.format(cnt), tmp_image)
                     cnt += 1
