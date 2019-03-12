@@ -155,7 +155,7 @@ def main(_):
                 images = read_lst_images_w_noise2(lst_image_paths, nd_patch_size, nd_patch_step)
 
                 lst_prob = process_frame(os.path.basename(s_image_dirs),images,tmp_ALOCC_model,cnt)
-                if lst_prob > 8.9:
+                if lst_prob > 5.2:
                     ano += 1
                 else:
                     non += 1
