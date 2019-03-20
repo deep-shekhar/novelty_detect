@@ -56,7 +56,7 @@ def main(_):
     # ---------------------------------------------------------------------------------------------
     # DATASET PARAMETER : UCSD
     FLAGS.dataset = 'my_data'
-    FLAGS.dataset_address = './dataset'
+    FLAGS.dataset_address = './dataset2'
 
     nd_input_frame_size = (200, 360)
     nd_slice_size = (315, 180)
